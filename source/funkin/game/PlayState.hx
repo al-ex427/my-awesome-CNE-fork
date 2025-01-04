@@ -501,14 +501,17 @@ class PlayState extends MusicBeatState
 	 * All combo ratings.
 	 */
 	public var comboRatings:Array<ComboRating> = [
-		new ComboRating(0, "F", 0xFFFF4444),
+		new ComboRating(0, "GIT GUD BOZO - Z-", 0xFF892B2B),
+		new ComboRating(0.25, "F", 0xFFFF4444),
 		new ComboRating(0.5, "E", 0xFFFF8844),
 		new ComboRating(0.7, "D", 0xFFFFAA44),
 		new ComboRating(0.8, "C", 0xFFFFFF44),
 		new ComboRating(0.85, "B", 0xFFAAFF44),
 		new ComboRating(0.9, "A", 0xFF88FF44),
 		new ComboRating(0.95, "S", 0xFF44FFFF),
-		new ComboRating(1, "S++", 0xFF44FFFF),
+		new ComboRating(0.975, "S+", 0xFF44FFFF),
+		new ComboRating(0.99, "S++", 0xFF000FFF),
+		new ComboRating(1, "SS", 0xFF9500FF),
 	];
 
 	public var detailsText:String = "";
@@ -734,7 +737,8 @@ class PlayState extends MusicBeatState
 
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 
-		healthBarBG = new FlxSprite(0, FlxG.height * 0.9).loadAnimatedGraphic(Paths.image('game/healthBar'));
+		healthBarBG = new FlxSprite(0, (FlxG.height * 0.9)).loadAnimatedGraphic(Paths.image('game/healthBar'));
+		healthBarBG.width = 850;
 		healthBarBG.screenCenter(X);
 		healthBarBG.scrollFactor.set();
 		add(healthBarBG);
@@ -1229,7 +1233,7 @@ class PlayState extends MusicBeatState
 		missesTxt.text = '${comboBreaks ? "Combo Breaks" : "Misses"}:$misses';
 
 		if (curRating == null)
-			curRating = new ComboRating(0, "[N/A]", 0xFF888888);
+			curRating = new ComboRating(0, "[???]", 0xFF565656);
 
 		@:privateAccess {
 			accFormat.format.color = curRating.color;
