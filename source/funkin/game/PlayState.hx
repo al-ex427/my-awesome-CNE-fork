@@ -349,8 +349,11 @@ class PlayState extends MusicBeatState
 	/**
 	 * FunkinText that shows the time 
 	 */
-	public var timeText:FunkinText;
-
+	public var timeTxt:FunkinText;
+	/**
+	 * FunkinText that shows the songs name (can be disabled)
+	 */
+	 public var curSongTxt:FunkinText;
 	/**
 	 * Score for the current week.
 	 */
@@ -767,11 +770,17 @@ class PlayState extends MusicBeatState
 		timeBarBG.screenCenter(X);
 		timeBarBG.scrollFactor.set();
 		timeBarBG.color = FlxColor.BLACK;
-		add(timeBarBG);
+	//	add(timeBarBG);
 
-		timeBar = new FlxBar(timeBarBG.x + 4, timeBarBG.y + 4, LEFT_TO_RIGHT, Std.int(timeBarBG.width - 8), Std.int(timeBarBG.height - 8), this, 'time', 0);
-		add(timeBar);
 
+		timeBar = new FlxBar(timeBarBG.x + 4, timeBarBG.y + 4, LEFT_TO_RIGHT, Std.int(timeBarBG.width - 8), Std.int(timeBarBG.height - 8), this, 'songPosition', 0, 1);
+		timeBar.createFilledBar(0xFF000000, 0xFFFFFFFF);
+	//	add(timeBar);
+
+
+		timeTxt = new FunkinText(timeBarBG.x, timeBarBG.y, timeBarBG.width, "A song (00:00)", 24);
+		timeTxt.alignment = CENTER;
+	//	add(timeTxt);
 
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
 			'health', 0, maxHealth);
@@ -795,16 +804,19 @@ class PlayState extends MusicBeatState
 		accuracyTxt = new FunkinText(healthBarBG.x + 50, healthBarBG.y + 30, Std.int(healthBarBG.width - 100), "Accuracy: 0.00% [???]", 16);
 		accuracyTxt.addFormat(accFormat, 0, 1);
 
-		for(text in [scoreTxt, missesTxt, accuracyTxt]) {
+		curSongTxt = new FunkinText(0, 5, FlxG.width, '- ${curSong.toUpperCase()} [${difficulty}] -', 24);
+		curSongTxt.alpha = 0.75;
+		for(text in [scoreTxt, missesTxt, accuracyTxt,  curSongTxt]) { //timeTxt,
 			text.scrollFactor.set();
 			add(text);
 		}
-		scoreTxt.alignment = RIGHT;
+		scoreTxt.alignment = LEFT;
 		missesTxt.alignment = CENTER;
-		accuracyTxt.alignment = LEFT;
+		curSongTxt.alignment = CENTER;
+		accuracyTxt.alignment = RIGHT;
 		updateRatingStuff();
 
-		for(e in [healthBar, healthBarBG, iconP1, iconP2, scoreTxt, missesTxt, accuracyTxt, timeBar, timeBarBG])
+		for(e in [healthBar, healthBarBG, iconP1, iconP2, scoreTxt, missesTxt, accuracyTxt, curSongTxt]) //timeBar, timeBarBG, timeTxt, 
 			e.cameras = [camHUD];
 		#end
 
@@ -1263,7 +1275,7 @@ class PlayState extends MusicBeatState
 		missesTxt.text = '${comboBreaks ? "Combo Breaks" : "Misses"}: $misses';
 
 		if (curRating == null)
-			curRating = new ComboRating(0, "[???]", 0xFF565656);
+			curRating = new ComboRating(0, "[?]", 0xFF565656);
 
 		@:privateAccess {
 			accFormat.format.color = curRating.color;
@@ -1865,8 +1877,8 @@ class PlayState extends MusicBeatState
 			iconP1.scale.set(1.2, 1.2);
 			iconP2.scale.set(1.2, 1.2);
 
-			iconP1.updateHitbox();
-			iconP2.updateHitbox();
+			//iconP1.updateHitbox();
+			//iconP2.updateHitbox();
 		}
 
 		scripts.call("beatHit", [curBeat]);
