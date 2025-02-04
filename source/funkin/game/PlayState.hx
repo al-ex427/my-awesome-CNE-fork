@@ -804,7 +804,7 @@ class PlayState extends MusicBeatState
 		accuracyTxt = new FunkinText(healthBarBG.x + 50, healthBarBG.y + 30, Std.int(healthBarBG.width - 100), "Accuracy: 0.00% [???]", 16);
 		accuracyTxt.addFormat(accFormat, 0, 1);
 
-		curSongTxt = new FunkinText(0, 5, FlxG.width, '- ${curSong.toUpperCase()} [${difficulty}] -', 24);
+		curSongTxt = new FunkinText(0, 5, FlxG.width, '- ${SONG.meta.displayName} [${difficulty.toUpperCase()}] -', 24);
 		curSongTxt.alpha = 0.75;
 		for(text in [scoreTxt, missesTxt, accuracyTxt,  curSongTxt]) { //timeTxt,
 			text.scrollFactor.set();

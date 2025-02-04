@@ -74,8 +74,9 @@ class MainMenuState extends MusicBeatState
 
 		FlxG.camera.follow(camFollow, null, 0.06);
 
-		versionText = new FunkinText(5, FlxG.height - 2, 0, 'Awesome CNE Fork v${Application.current.meta.get('version')}\nCommit ${funkin.backend.system.macros.GitCommitMacro.commitNumber} (${funkin.backend.system.macros.GitCommitMacro.commitHash})\n[${controls.getKeyName(SWITCHMOD)}] Open Mods menu\n');
-		versionText.y -= versionText.height;
+		versionText = new FunkinText(FlxG.height - 2, 5, FlxG.width, 'Awesome CNE Fork v${Application.current.meta.get('version')}\nCommit ${funkin.backend.system.macros.GitCommitMacro.commitNumber} (${funkin.backend.system.macros.GitCommitMacro.commitHash})\n[${controls.getKeyName(SWITCHMOD)}] Open Mods menu\n');
+		versionText.x -= versionText.width;
+		versionText.alignment = RIGHT; 
 		versionText.scrollFactor.set();
 		add(versionText);
 
@@ -83,7 +84,7 @@ class MainMenuState extends MusicBeatState
 	}
 
 	var selectedSomethin:Bool = false;
-//	var forceCenterX:Bool = true;
+	var forceCenterX:Bool = true;
 
 	override function update(elapsed:Float)
 	{
