@@ -9,6 +9,8 @@ public var enablePixelUI = true;
 public var enablePixelGameOver = true;
 public var enableCameraHacks = Options.week6PixelPerfect;
 public var enablePauseMenu = true;
+public var howPixelatedTheHudShouldBe = 1;
+public var pixelateHud = true;
 public var isSpooky = false;
 
 var oldStageQuality = FlxG.game.stage.quality;
@@ -95,6 +97,9 @@ function postCreate() {
 
 		makeCameraPixely(camGame);
 		defaultCamZoom /= daPixelZoom;
+	}
+	if (pixelateHud) {
+		
 	}
 
 	iconP1.antialiasing = false;

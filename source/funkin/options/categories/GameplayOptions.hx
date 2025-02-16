@@ -27,6 +27,11 @@ class GameplayOptions extends OptionsScreen {
 			"songOffset", // save name or smth
 			__changeOffset)); // callback
 		add(new Checkbox(
+			"Simple Score Text",
+			"If checked, only shows the score",
+			"simpleScoreTxt"
+		));
+		add(new Checkbox(
 			"Naughtyness",
 			"If unchecked, will censor the Week 7 cutscenes.",
 			"naughtyness"));

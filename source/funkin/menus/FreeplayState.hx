@@ -73,6 +73,15 @@ class FreeplayState extends MusicBeatState
 	public var bg:FlxSprite;
 
 	/**
+	 * Modifers indicator
+	 */
+	public var modifersTxt:FlxText;
+		/**
+	 * bg2 
+	 */
+	 public var bg2:FlxSprite;
+
+	/**
 	 * Whenever the player can navigate and select
 	 */
 	public var canSelect:Bool = true;
@@ -151,10 +160,11 @@ class FreeplayState extends MusicBeatState
 			// songText.screenCenter(X);
 		}
 
-		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
-		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
+		scoreText = new FlxText(FlxG.width * 0.7, 0, 0, "", 32);
+		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER);
 
 		scoreBG = new FlxSprite(scoreText.x - 6, 0).makeGraphic(1, 1, 0xFF000000);
+
 		scoreBG.alpha = 0.6;
 		add(scoreBG);
 
@@ -167,6 +177,14 @@ class FreeplayState extends MusicBeatState
 		add(coopText);
 
 		add(scoreText);
+
+		modifersTxt = new FlxText(0,0,FlxG.width, "[CTRL] To open freeplay modifiers", 16);
+		modifersTxt.font = scoreText.font;
+		modifersTxt.y = FlxG.height - modifersTxt.height;
+		modifersTxt.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 1, 1);
+		add(modifersTxt);
+
+		bg2 = new FlxSprite().makeGraphic(1, 1, 0xFF000000);
 
 		changeSelection(0, true);
 		changeDiff(0, true);
@@ -267,6 +285,11 @@ class FreeplayState extends MusicBeatState
 
 		if (controls.ACCEPT #if PRELOAD_ALL && !dontPlaySongThisFrame #end)
 			select();
+		if(FlxG.keys.justPressed.CONTROL) {
+			openSubState(new FreeplayModifiersScreen());
+			persistentUpdate = false;
+			persistentDraw = true;
+		}
 	}
 
 	var __opponentMode:Bool = false;

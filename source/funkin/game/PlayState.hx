@@ -137,6 +137,8 @@ class PlayState extends MusicBeatState
 	 */
 	public var downscroll(get, set):Bool;
 
+	public var botplay:Bool = false;
+
 	@:dox(hide) private function set_downscroll(v:Bool) {return camHUD.downscroll = v;}
 	@:dox(hide) private function get_downscroll():Bool  {return camHUD.downscroll;}
 
@@ -220,6 +222,12 @@ class PlayState extends MusicBeatState
 	public var doIconBop:Bool = true;
 
 	/**
+	 * Allow window title change.
+	 */
+	 public var windowTitleChange:Bool = true;
+
+
+	/**
 	 * Whenever cam zooming is enabled, enables on a note hit if not cancelled.
 	 */
 	public var camZooming:Bool = false;
@@ -263,6 +271,10 @@ class PlayState extends MusicBeatState
 	 * Current combo.
 	 */
 	public var combo:Int = 0;
+		/**
+	 * Current combo.
+	 */
+	 public var maxCombo:Int = 0;
 
 	/**
 	 * Whenever the misses should show "Combo Breaks" instead of "Misses"
@@ -328,14 +340,6 @@ class PlayState extends MusicBeatState
 	 * FunkinText that shows your score.
 	 */
 	public var scoreTxt:FunkinText;
-	/**
-	 * FunkinText that shows your amount of misses.
-	 */
-	public var missesTxt:FunkinText;
-	/**
-	 * FunkinText that shows your accuracy.
-	 */
-	public var accuracyTxt:FunkinText;
 
 	/**
 	 * FlxSprite that is the timebar bg
@@ -525,18 +529,39 @@ class PlayState extends MusicBeatState
 	 * All combo ratings.
 	 */
 	public var comboRatings:Array<ComboRating> = [
-		new ComboRating(0, "GIT GUD BOZO - Z-", 0xFF892B2B),
-		new ComboRating(0.25, "F", 0xFFFF4444),
-		new ComboRating(0.5, "E", 0xFFFF8844),
-		new ComboRating(0.7, "D", 0xFFFFAA44),
-		new ComboRating(0.8, "C", 0xFFFFFF44),
-		new ComboRating(0.85, "B", 0xFFAAFF44),
-		new ComboRating(0.9, "A", 0xFF88FF44),
-		new ComboRating(0.95, "S", 0xFF44FFFF),
-		new ComboRating(0.975, "S+", 0xFF44FFFF),
-		new ComboRating(0.99, "S++", 0xFF000FFF),
-		new ComboRating(1, "SS", 0xFF9500FF),
+		new ComboRating(0, "Z-"), //0xFF892B2B
+		new ComboRating(0.25, "F" ), //0xFFFF4444
+		new ComboRating(0.5, "E" ), //0xFFFF8844
+		new ComboRating(0.7, "D"), // 0xFFFFAA44
+		new ComboRating(0.8, "C" ), //0xFFFFFF44
+		new ComboRating(0.85, "B" ), //0xFFAAFF44
+		new ComboRating(0.9, "A" ), //0xFF88FF44
+		new ComboRating(0.95, "S" ), //0xFF44FFFF
+		new ComboRating(0.975, "S+" ), //0xFF44FFFF
+		new ComboRating(0.99, "S++" ), //0xFF000FFF
+		new ComboRating(1, "SS" ), //0xFF9500FF
 	];
+	public var ratingFCShit:String = "?";
+
+	public function calculateFCFunctionShit() {
+		if (misses < 0) {
+			ratingFCShit = "?";
+		}
+		
+		if (misses == 0 ) {
+			ratingFCShit = "FC";
+		}
+		else if (misses < 10) {
+			ratingFCShit = "SDCB";
+		}
+		else if (misses >= 10) {
+			ratingFCShit = "Clear";
+		}
+		else if (misses >= 100) {
+			ratingFCShit = "dam u bad af";
+		}
+	}
+
 
 	public var detailsText:String = "";
 	public var detailsPausedText:String = "";
@@ -558,6 +583,7 @@ class PlayState extends MusicBeatState
 		var event = scripts.event("onRatingUpdate", EventManager.get(RatingUpdateEvent).recycle(rating, curRating));
 		if (!event.cancelled)
 			curRating = event.rating;
+		calculateFCFunctionShit();
 	}
 
 	private inline function get_maxHealth()
@@ -615,6 +641,10 @@ class PlayState extends MusicBeatState
 
 		// String for when the game is paused
 		detailsPausedText = "Paused - " + detailsText;
+
+		if (windowTitleChange) {
+			lime.app.Application.current.window.title = "Friday Night Funkin'" + ' - Awesome CNE Fork - ${SONG.meta.displayName}';
+		}
 		#end
 
 		// CHARACTER INITIALIZATION
@@ -761,7 +791,7 @@ class PlayState extends MusicBeatState
 
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 
-		healthBarBG = new FlxSprite(0, (FlxG.height * 0.9)).loadAnimatedGraphic(Paths.image('game/healthBar'));
+		healthBarBG = new FlxSprite(0, (FlxG.height * 0.89)).loadAnimatedGraphic(Paths.image('game/healthBar'));
 		healthBarBG.screenCenter(X);
 		healthBarBG.scrollFactor.set();
 		add(healthBarBG);
@@ -788,7 +818,7 @@ class PlayState extends MusicBeatState
 		var leftColor:Int = dad != null && dad.iconColor != null && Options.colorHealthBar ? dad.iconColor : (opponentMode ? 0xFF66FF33 : 0xFFFF0000);
 		var rightColor:Int = boyfriend != null && boyfriend.iconColor != null && Options.colorHealthBar ? boyfriend.iconColor : (opponentMode ? 0xFFFF0000 : 0xFF66FF33); // switch the colors
 		healthBar.createFilledBar(leftColor, rightColor);
-		add(healthBar);
+		insert(members.indexOf(healthBarBG), healthBar);
 
 		health = maxHealth / 2;
 
@@ -799,24 +829,27 @@ class PlayState extends MusicBeatState
 			add(icon);
 		}
 
-		scoreTxt = new FunkinText(healthBarBG.x + 50, healthBarBG.y + 30, Std.int(healthBarBG.width - 100), "Score: 0", 16);
-		missesTxt = new FunkinText(healthBarBG.x + 50, healthBarBG.y + 30, Std.int(healthBarBG.width - 100), "Misses: 0", 16);
-		accuracyTxt = new FunkinText(healthBarBG.x + 50, healthBarBG.y + 30, Std.int(healthBarBG.width - 100), "Accuracy: 0.00% [???]", 16);
-		accuracyTxt.addFormat(accFormat, 0, 1);
+		scoreTxt = new FunkinText(0, healthBarBG.y + (downscroll ? -45 : 45), FlxG.width, "brr skipidi dop dop yes yes", 18);
+		scoreTxt.alignment = CENTER;
+		scoreTxt.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 1.75, 5);
 
-		curSongTxt = new FunkinText(0, 5, FlxG.width, '- ${SONG.meta.displayName} [${difficulty.toUpperCase()}] -', 24);
-		curSongTxt.alpha = 0.75;
-		for(text in [scoreTxt, missesTxt, accuracyTxt,  curSongTxt]) { //timeTxt,
+		//missesTxt = new FunkinText(healthBarBG.x + 50, healthBarBG.y + 30, Std.int(healthBarBG.width - 100), "Misses: 0", 16);
+	//	accuracyTxt = new FunkinText(healthBarBG.x + 50, healthBarBG.y + 30, Std.int(healthBarBG.width - 100), "Accuracy: 0.00% [???]", 16);
+	//	accuracyTxt.addFormat(accFormat, 0, 1);
+
+		curSongTxt = new FunkinText(0, 5, FlxG.width, '- ${SONG.meta.displayName} [${difficulty.toUpperCase()}] | 0:00 / 0:01 -', 24);
+		curSongTxt.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 1.75, 5);
+		curSongTxt.alignment = CENTER;
+		for(text in [scoreTxt,curSongTxt]) { // missesTxt, accuracyTxt,  timeTxt, 
+			text.alpha = 0.75;
 			text.scrollFactor.set();
 			add(text);
 		}
-		scoreTxt.alignment = LEFT;
-		missesTxt.alignment = CENTER;
-		curSongTxt.alignment = CENTER;
-		accuracyTxt.alignment = RIGHT;
+		
+
 		updateRatingStuff();
 
-		for(e in [healthBar, healthBarBG, iconP1, iconP2, scoreTxt, missesTxt, accuracyTxt, curSongTxt]) //timeBar, timeBarBG, timeTxt, 
+		for(e in [healthBar, healthBarBG, iconP1, iconP2, scoreTxt,  curSongTxt]) //missesTxt, accuracyTxt, timeBar, timeBarBG, timeTxt, 
 			e.cameras = [camHUD];
 		#end
 
@@ -1270,23 +1303,20 @@ class PlayState extends MusicBeatState
 		iconP2.health = 1 - (healthBar.percent / 100);
 	}
 
+	
+	public var seperator:String = "//";
+
 	function updateRatingStuff() {
-		scoreTxt.text = 'Score: $songScore';
-		missesTxt.text = '${comboBreaks ? "Combo Breaks" : "Misses"}: $misses';
-
-		if (curRating == null)
-			curRating = new ComboRating(0, "[?]", 0xFF565656);
-
-		@:privateAccess {
-			accFormat.format.color = curRating.color;
-			accuracyTxt.text = 'Accuracy: ${accuracy < 0 ? "0.00%" : '${CoolUtil.quantize(accuracy * 100, 100)}%'} - ${curRating.rating}';
-
-			for (i => frmtRange in accuracyTxt._formatRanges) if (frmtRange.format == accFormat) {
-				accuracyTxt._formatRanges[i].range.start = accuracyTxt.text.length - curRating.rating.length;
-				accuracyTxt._formatRanges[i].range.end = accuracyTxt.text.length;
-				break;
-			}
+		if (botplay ) {
+			scoreTxt.text = 'Bot Score: ? ${seperator} BOT ${comboBreaks ? "Combo Breaks" : "Misses"}: ? ${seperator} Bot Combo: ? [0]';
 		}
+		else if (Options.simpleScoreTxt) {
+			scoreTxt.text = 'Score: $songScore';
+		}
+		else {
+			scoreTxt.text = 'Score: $songScore ${seperator} ${comboBreaks ? "Combo Breaks" : "Misses"}: $misses [$ratingFCShit] ${seperator} Combo: $combo [$maxCombo] ${seperator} Accuracy: ${accuracy < 0 ? "[?]" : '${CoolUtil.quantize(accuracy * 100, 100)}% [${curRating.rating}]'}';
+		}
+		
 	}
 
 	@:dox(hide)
@@ -1317,14 +1347,15 @@ class PlayState extends MusicBeatState
 		}
 
         if (doIconBop) {
-			iconP1.scale.set(lerp(iconP1.scale.x, 1, 0.33), lerp(iconP1.scale.y, 1, 0.33));
-			iconP2.scale.set(lerp(iconP2.scale.x, 1, 0.33), lerp(iconP2.scale.y, 1, 0.33));
+			iconP1.scale.set(lerp(iconP1.scale.x, 1, 0.35), lerp(iconP1.scale.y, 1, 0.35));
+			iconP2.scale.set(lerp(iconP2.scale.x, 1, 0.35), lerp(iconP2.scale.y, 1, 0.35));
 
-			iconP1.updateHitbox();
-			iconP2.updateHitbox();
+		//	iconP1.updateHitbox();
+		//	iconP2.updateHitbox();
 		}
 		updateIconPositions();
 
+		curSongTxt.text = '- ${SONG.meta.displayName} [${difficulty.toUpperCase()}] | ${CoolUtil.timeToStr(Conductor.songPosition)} / ${CoolUtil.timeToStr(inst.length)} -';
 		if (startingSong)
 		{
 			if (startedCountdown)
@@ -1726,7 +1757,14 @@ class PlayState extends MusicBeatState
 					totalAccuracyAmount += event.accuracy;
 					updateRating();
 				}
-				if (event.countAsCombo) combo++;
+				if (event.countAsCombo) 
+				{
+					combo++;
+					if (combo > maxCombo) {
+						maxCombo++;
+					}
+				}
+					
 
 				if (event.showRating || (event.showRating == null && event.player))
 				{
@@ -1874,8 +1912,8 @@ class PlayState extends MusicBeatState
 
         if (doIconBop)
 		{
-			iconP1.scale.set(1.2, 1.2);
-			iconP2.scale.set(1.2, 1.2);
+			iconP1.scale.set(1.25, 1.25);
+			iconP2.scale.set(1.25, 1.25);
 
 			//iconP1.updateHitbox();
 			//iconP2.updateHitbox();
@@ -1997,12 +2035,10 @@ class PlayState extends MusicBeatState
 final class ComboRating {
 	public var percent:Float;
 	public var rating:String;
-	public var color:FlxColor;
 
-	public function new(percent:Float, rating:String, color:FlxColor) {
+	public function new(percent:Float, rating:String) {
 		this.percent = percent;
 		this.rating = rating;
-		this.color = color;
 	}
 }
 

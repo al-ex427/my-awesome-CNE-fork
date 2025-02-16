@@ -25,6 +25,24 @@ class DebugOptions extends TreeMenu {
 }
 
 class DebugOptionsScreen extends OptionsScreen {
+	var iconsArray:Array<Dynamic> = [
+		WindowsUtil.MessageBoxIconType.MSG_NONE, 
+		WindowsUtil.MessageBoxIconType.MSG_WARNING, 
+		WindowsUtil.MessageBoxIconType.MSG_INFORMATION,
+		WindowsUtil.MessageBoxIconType.MSG_QUESTION,
+		WindowsUtil.MessageBoxIconType.MSG_ERROR
+	];
+
+	var buttonsArray:Array<Dynamic> = [
+		WindowsUtil.MessageBoxButtonType.MSGBTN_ARI, 
+		WindowsUtil.MessageBoxButtonType.MSGBTN_CTC, 
+		WindowsUtil.MessageBoxButtonType.MSGBTN_HELP,
+		WindowsUtil.MessageBoxButtonType.MSGBTN_OK,
+		WindowsUtil.MessageBoxButtonType.MSGBTN_OKCANCEL,
+		WindowsUtil.MessageBoxButtonType.MSGBTN_RETRYCANCEL,
+		WindowsUtil.MessageBoxButtonType.MSGBTN_YESNO,
+		WindowsUtil.MessageBoxButtonType.MSGBTN_YNC,
+	];
 	public override function new() {
 		super("Debug Options", "Use this menu to change debug options.");
 		#if windows
@@ -33,6 +51,12 @@ class DebugOptionsScreen extends OptionsScreen {
 			"Select this to show the debug console, which contains log information about the game.",
 			function() {
 				NativeAPI.allocConsole();
+			}));
+		add(new TextOption(
+			"Message Box",
+			"Tests Message Box",
+			function() {
+				WindowsUtil.ShowMessageBox("NO MORE INNOCENCE", "i have invaded your computer, muhehehe", iconsArray[FlxG.random.int(0, 4)], buttonsArray[FlxG.random.int(0, 7)]);
 			}));
 		#end
 		add(new Checkbox(
