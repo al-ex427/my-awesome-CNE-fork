@@ -49,6 +49,9 @@ class WindowsUtil {
 	@:functionCode('MessageBoxA(CNE_MAIN_WINDOW(), message, caption, buttons | icon);')
 public static function ShowMessageBox(caption:String, message:String, icon:MessageBoxIconType = MSG_NONE, buttons:MessageBoxButtonType = MSGBTN_OK) {}
 
+/**
+ * use ndlls to add extra stuff im not giving you all of it -alex
+ */
 }
 
 /**

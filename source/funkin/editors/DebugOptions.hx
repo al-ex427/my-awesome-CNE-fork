@@ -6,6 +6,18 @@ import funkin.options.TreeMenu;
 import funkin.backend.utils.NativeAPI;
 
 class DebugOptions extends TreeMenu {
+	public static var mainOptions:Array<OptionCategory> = [
+		{
+			name: 'Debug Options >',
+			desc: 'All the debug options',
+			state: DebugOptionsScreen
+		},
+		{
+			name: 'Windows Util Tester >',
+			desc: 'Use this menu to test some WindowsUtil.hx functions.',
+			state: WinUtilTester
+		}
+	];
 	public override function create() {
 		super.create();
 
@@ -20,29 +32,27 @@ class DebugOptions extends TreeMenu {
 		bg.antialiasing = true;
 		add(bg);
 
-		main = new DebugOptionsScreen();
+		main = new OptionsScreen("Debug Tools", "Select a category to continue.", [for(o in mainOptions) new TextOption(o.name, o.desc, function() {
+			if (o.substate != null) {
+				persistentUpdate = false;
+				persistentDraw = true;
+				if (o.substate is MusicBeatSubstate) {
+					openSubState(o.substate);
+				} else {
+					openSubState(Type.createInstance(o.substate, []));
+				}
+			} else {
+				if (o.state is OptionsScreen) {
+					optionsTree.add(o.state);
+				} else {
+					optionsTree.add(Type.createInstance(o.state, []));
+				}
+			}
+		})]);
 	}
 }
 
 class DebugOptionsScreen extends OptionsScreen {
-	var iconsArray:Array<Dynamic> = [
-		WindowsUtil.MessageBoxIconType.MSG_NONE, 
-		WindowsUtil.MessageBoxIconType.MSG_WARNING, 
-		WindowsUtil.MessageBoxIconType.MSG_INFORMATION,
-		WindowsUtil.MessageBoxIconType.MSG_QUESTION,
-		WindowsUtil.MessageBoxIconType.MSG_ERROR
-	];
-
-	var buttonsArray:Array<Dynamic> = [
-		WindowsUtil.MessageBoxButtonType.MSGBTN_ARI, 
-		WindowsUtil.MessageBoxButtonType.MSGBTN_CTC, 
-		WindowsUtil.MessageBoxButtonType.MSGBTN_HELP,
-		WindowsUtil.MessageBoxButtonType.MSGBTN_OK,
-		WindowsUtil.MessageBoxButtonType.MSGBTN_OKCANCEL,
-		WindowsUtil.MessageBoxButtonType.MSGBTN_RETRYCANCEL,
-		WindowsUtil.MessageBoxButtonType.MSGBTN_YESNO,
-		WindowsUtil.MessageBoxButtonType.MSGBTN_YNC,
-	];
 	public override function new() {
 		super("Debug Options", "Use this menu to change debug options.");
 		#if windows
@@ -51,12 +61,6 @@ class DebugOptionsScreen extends OptionsScreen {
 			"Select this to show the debug console, which contains log information about the game.",
 			function() {
 				NativeAPI.allocConsole();
-			}));
-		add(new TextOption(
-			"Message Box",
-			"Tests Message Box",
-			function() {
-				WindowsUtil.ShowMessageBox("NO MORE INNOCENCE", "i have invaded your computer, muhehehe", iconsArray[FlxG.random.int(0, 4)], buttonsArray[FlxG.random.int(0, 7)]);
 			}));
 		#end
 		add(new Checkbox(
@@ -91,5 +95,35 @@ class DebugOptionsScreen extends OptionsScreen {
 			"Autosaves Folder",
 			"If checked, this will autosave your file in a seperate folder with a time stamp instead of overriding your current file. (song/autosaves/)",
 			"charterAutoSavesSeperateFolder"));
+	}
+}
+
+class WinUtilTester extends OptionsScreen {
+	var iconsArray:Array<Dynamic> = [
+		WindowsUtil.MessageBoxIconType.MSG_NONE, 
+		WindowsUtil.MessageBoxIconType.MSG_WARNING, 
+		WindowsUtil.MessageBoxIconType.MSG_INFORMATION,
+		WindowsUtil.MessageBoxIconType.MSG_QUESTION,
+		WindowsUtil.MessageBoxIconType.MSG_ERROR
+	];
+
+	var buttonsArray:Array<Dynamic> = [
+		WindowsUtil.MessageBoxButtonType.MSGBTN_ARI, 
+		WindowsUtil.MessageBoxButtonType.MSGBTN_CTC, 
+		WindowsUtil.MessageBoxButtonType.MSGBTN_HELP,
+		WindowsUtil.MessageBoxButtonType.MSGBTN_OK,
+		WindowsUtil.MessageBoxButtonType.MSGBTN_OKCANCEL,
+		WindowsUtil.MessageBoxButtonType.MSGBTN_RETRYCANCEL,
+		WindowsUtil.MessageBoxButtonType.MSGBTN_YESNO,
+		WindowsUtil.MessageBoxButtonType.MSGBTN_YNC,
+	];
+	public override function new() {
+		super("NDLL TESTER", 'Test some ndll functions here');
+		add(new TextOption(
+			"Message Box",
+			"Tests Message Box",
+			function() {
+				WindowsUtil.ShowMessageBox("NO MORE INNOCENCE", "i have invaded your computer, muhehehe", iconsArray[FlxG.random.int(0, 4)], buttonsArray[FlxG.random.int(0, 7)]);
+			}));
 	}
 }
