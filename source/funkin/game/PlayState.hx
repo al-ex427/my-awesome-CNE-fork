@@ -1,6 +1,7 @@
 package funkin.game;
 
 import funkin.editors.charter.CharterSelection;
+import openfl.Lib;
 import flixel.FlxState;
 import funkin.editors.SaveWarning;
 import funkin.backend.chart.EventsData;
@@ -220,6 +221,11 @@ class PlayState extends MusicBeatState
 	 * Whether or not to bop the icons on beat.
 	 */
 	public var doIconBop:Bool = true;
+
+	/**
+	 * Whether or not to scale hud elements on start
+	 */
+	public var doScaleOnStart:Bool = false;
 
 	/**
 	 * Allow window title change.
@@ -643,7 +649,7 @@ class PlayState extends MusicBeatState
 		detailsPausedText = "Paused - " + detailsText;
 
 		if (windowTitleChange) {
-			lime.app.Application.current.window.title = "Friday Night Funkin'" + ' - Awesome CNE Fork - ${SONG.meta.displayName}';
+			Lib.application.window.title = "Friday Night Funkin'" + ' - Awesome CNE Fork - ${SONG.meta.displayName}';
 		}
 		#end
 
@@ -837,7 +843,7 @@ class PlayState extends MusicBeatState
 	//	accuracyTxt = new FunkinText(healthBarBG.x + 50, healthBarBG.y + 30, Std.int(healthBarBG.width - 100), "Accuracy: 0.00% [???]", 16);
 	//	accuracyTxt.addFormat(accFormat, 0, 1);
 
-		curSongTxt = new FunkinText(0, 5, FlxG.width, '- ${SONG.meta.displayName} [${difficulty.toUpperCase()}] | 0:00 / 0:01 -', 24);
+		curSongTxt = new FunkinText(0, 5, FlxG.width, '- ${SONG.meta.displayName} [${difficulty.toUpperCase()}] | 00:00 / 00:01 -', 24);
 		curSongTxt.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 1.75, 5);
 		curSongTxt.alignment = CENTER;
 		for(text in [scoreTxt,curSongTxt]) { // missesTxt, accuracyTxt,  timeTxt, 
@@ -845,12 +851,21 @@ class PlayState extends MusicBeatState
 			text.scrollFactor.set();
 			add(text);
 		}
+
+		
 		
 
 		updateRatingStuff();
 
-		for(e in [healthBar, healthBarBG, iconP1, iconP2, scoreTxt,  curSongTxt]) //missesTxt, accuracyTxt, timeBar, timeBarBG, timeTxt, 
+		for(e in [healthBar, healthBarBG, iconP1, iconP2, scoreTxt,  curSongTxt]) {
 			e.cameras = [camHUD];
+			if (doScaleOnStart)
+			{
+				e.scale.x = 0;
+			}
+			
+		}
+
 		#end
 
 		startingSong = true;
@@ -1022,6 +1037,13 @@ class PlayState extends MusicBeatState
 	@:dox(hide) function startSong():Void
 	{
 		scripts.call("onSongStart");
+		if (doScaleOnStart) {
+			for (spr in [healthBar, healthBarBG, iconP1, iconP2, scoreTxt, curSongTxt]) {
+				FlxTween.tween(spr.scale, {x: 1}, 1, {ease: FlxEase.expoOut});
+			}	
+		}
+		
+		
 		startingSong = false;
 
 		inst.onComplete = endSong;
@@ -1346,16 +1368,22 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-        if (doIconBop) {
+        if (doIconBop ) {
+			if (!startingSong && doScaleOnStart) return;
+
 			iconP1.scale.set(lerp(iconP1.scale.x, 1, 0.35), lerp(iconP1.scale.y, 1, 0.35));
 			iconP2.scale.set(lerp(iconP2.scale.x, 1, 0.35), lerp(iconP2.scale.y, 1, 0.35));
 
-		//	iconP1.updateHitbox();
-		//	iconP2.updateHitbox();
+			iconP1.angle = lerp(iconP1.angle, 0, 0.1);
+			iconP2.angle = lerp(iconP1.angle, 0, 0.1);
+					//	iconP1.updateHitbox();
+			//	iconP2.updateHitbox();
+			
+
 		}
 		updateIconPositions();
 
-		curSongTxt.text = '- ${SONG.meta.displayName} [${difficulty.toUpperCase()}] | ${CoolUtil.timeToStr(Conductor.songPosition)} / ${CoolUtil.timeToStr(inst.length)} -';
+		curSongTxt.text = '- ${SONG.meta.displayName} [${difficulty.toUpperCase()}] | ${CoolUtil.timeToStr(Conductor.songPosition, false)} / ${CoolUtil.timeToStr(inst.length, false)} -';
 		if (startingSong)
 		{
 			if (startedCountdown)
@@ -1912,9 +1940,16 @@ class PlayState extends MusicBeatState
 
         if (doIconBop)
 		{
-			iconP1.scale.set(1.25, 1.25);
-			iconP2.scale.set(1.25, 1.25);
+			if (!startingSong && doScaleOnStart) return;
+				
+			iconP1.scale.set(1.05, 1.05);
+			iconP2.scale.set(1.05, 1.05);
 
+			iconP1.angle = -17.5;
+			iconP2.angle = 17.5;
+
+			
+			
 			//iconP1.updateHitbox();
 			//iconP2.updateHitbox();
 		}

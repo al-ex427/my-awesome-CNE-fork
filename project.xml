@@ -5,7 +5,7 @@
 		title="Friday Night Funkin' - Awesome CNE Fork" main="funkin.backend.system.Main"
 		file="AwesomeCNEFork" packageName="com.al-ex427.awesomecnefork"
 		package="com.al-ex427.awesomecnefork"
-		version="0.1.0" company="Al-ex427" />
+		version="0.1.0a" company="Al-ex427" />
 
 	<!--
 		CHANGE THE SAVE PATH & NAME FOR YOUR MOD HERE!

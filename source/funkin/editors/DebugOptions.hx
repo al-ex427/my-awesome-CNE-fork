@@ -118,10 +118,10 @@ class WinUtilTester extends OptionsScreen {
 		WindowsUtil.MessageBoxButtonType.MSGBTN_YNC,
 	];
 	public override function new() {
-		super("NDLL TESTER", 'Test some ndll functions here');
+		super("Windows Util tester", 'Test some WindowsUtil.hx functions here');
 		add(new TextOption(
 			"Message Box",
-			"Tests Message Box",
+			"Tests Message Box, most things will be random everytime except title and window message",
 			function() {
 				WindowsUtil.ShowMessageBox("NO MORE INNOCENCE", "i have invaded your computer, muhehehe", iconsArray[FlxG.random.int(0, 4)], buttonsArray[FlxG.random.int(0, 7)]);
 			}));

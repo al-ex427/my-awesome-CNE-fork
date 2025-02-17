@@ -718,8 +718,9 @@ class CoolUtil
 	/**
 	 * Converts a timestamp to a readable format such as `01:22` (`mm:ss`)
 	 */
-	public static inline function timeToStr(time:Float)
-		return '${Std.string(Std.int(time / 60000)).addZeros(2)}:${Std.string(Std.int(time / 1000) % 60).addZeros(2)}.${Std.string(Std.int(time % 1000)).addZeros(3)}';
+	public static inline function timeToStr(time:Float, decimals:Bool = true)
+		return '${Std.string(Std.int(time / 60000)).addZeros(2)}:${Std.string(Std.int(time / 1000) % 60).addZeros(2)}${decimals == true ? '.' + Std.string(Std.int(time % 1000)).addZeros(3) : ''}';
+	//wouldnt work if i used if();
 
 	/**
 	 * Stops a sound, set its time to 0 then play it again.

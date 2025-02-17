@@ -1,5 +1,9 @@
 package funkin.backend.utils;
 
+import funkin.options.Options;
+
+//your free to use it in your dlls, just credit me in the mod --alex
+
 
 @:buildXml('
 <compilerflag value="/DelayLoad:ComCtl32.dll"/>
@@ -35,19 +39,13 @@ package funkin.backend.utils;
 #pragma comment(lib, "Shell32.lib")
 #pragma comment(lib, "gdi32.lib")
 
-//some function wont work without this
-HWND CNE_MAIN_WINDOW() {
-  HWND hwnd = GetActiveWindow();
-  return hwnd;
-}
-
 ')
 #end
 
 class WindowsUtil {
-	
-	@:functionCode('MessageBoxA(CNE_MAIN_WINDOW(), message, caption, buttons | icon);')
-public static function ShowMessageBox(caption:String, message:String, icon:MessageBoxIconType = MSG_NONE, buttons:MessageBoxButtonType = MSGBTN_OK) {}
+
+	@:functionCode('MessageBoxA(GetActiveWindow(), message, caption, buttons | icon);')
+    public static function ShowMessageBox(caption:String, message:String, icon:MessageBoxIconType = MSG_NONE, buttons:MessageBoxButtonType = MSGBTN_OK) {}
 
 /**
  * use ndlls to add extra stuff im not giving you all of it -alex

@@ -39,6 +39,10 @@ class GameplayOptions extends OptionsScreen {
 			"Camera Zoom on Beat",
 			"If unchecked, will stop the camera from zooming in every 4 beats",
 			"camZoomOnBeat"));
+		add(new Checkbox(
+			"PC Hackery",
+			"If checked, allows songs and mods to mess your pc",
+			"hackYourPcYes"));
 	}
 
 	private function __changeOffset(offset)

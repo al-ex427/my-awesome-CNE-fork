@@ -36,6 +36,7 @@ class Options
 	public static var framerate:Int = 120;
 	public static var simpleScoreTxt:Bool = false;
 	public static var gpuOnlyBitmaps:Bool = #if (mac || web) false #else true #end; // causes issues on mac and web
+	public static var hackYourPcYes:Bool = true;
 
 	public static var lastLoadedMod:String = null;
 
