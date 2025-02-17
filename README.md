@@ -1,20 +1,13 @@
 # Awesome CNE Fork
-
-## PLEASE NOTE - THIS IS STILL IN A BETA STATE
-### Mods created with beta versions of Codename may not be compatible with the release version
-Known issues in the beta:
-- Some options are missing
+## This is a fork of the engine "Codename Engine". Which is in a beta state. Mods may or may not be compatible with this fork as of script modification.
+### If you have problems with modding, You can check out their website [HERE](https://codename-engine.com/)! Which will contain most api help.
+#### The Engine includes many new features, as seen [here](FEATURES.md)<br>
 
 Build instructions are below. Press TAB on the main menu to switch mods.
 
 Also, the command `.\cne test` uses the source assets folder instead of the export one for easier development (Although you can still use `lime test windows` normally).
 
-## Codename Engine
 
-Codename Engine is a new Friday Night Funkin' Engine aimed at simplifying modding, along with extensiblity and ease of use.<br>
-### Before making issues or need help with something, check our website [HERE](https://codename-engine.com/) (it contains a wiki of how to mod with EXAMPLES, an api, lists of mods made with Codename Engine and more)!!!
-#### The Engine includes many new features, as seen [here](FEATURES.md)<br>
-#### Wanna see the new features added in the most recent update? Click [here](PATCHNOTES.md)<br>
 
 ## How to download
 
@@ -23,8 +16,7 @@ In the future (when the engine won't be a WIP anymore) we're gonna also publish 
 
 <details>
   <summary><h2>How to build</h2></summary>
-
-## Refer to the [CNE Build Instructions](https://github.com/CodenameCrew/CodenameEngine?tab=readme-ov-file#how-to-build)
+  Refer to the [CNE Build Instructions](https://github.com/CodenameCrew/CodenameEngine?tab=readme-ov-file#how-to-build)
 
 </details>
 
@@ -48,7 +40,7 @@ In the future (when the engine won't be a WIP anymore) we're gonna also publish 
 </details>
 
 <details>
-  <summary><h2>Credits</h2></summary>
+  <summary><h2>CNE Credits</h2></summary>
 
 - Credits to [Ne_Eo](https://twitter.com/Ne_Eo_Twitch) and the [3D-HaxeFlixel](https://github.com/lunarcleint/3D-HaxeFlixel) repository for Away3D Flixel support
 - Credits to the [FlxAnimate](https://github.com/Dot-Stuff/flxanimate) team for the Animate Atlas support
