@@ -1,6 +1,7 @@
 package funkin.editors;
 
 import flixel.math.FlxPoint;
+import funkin.options.Options;
 import flixel.effects.FlxFlicker;
 
 class EditorPicker extends MusicBeatSubstate {
@@ -109,7 +110,7 @@ class EditorPicker extends MusicBeatSubstate {
 					});
 
 				sprites[curSelected].flicker(function() {
-					subCam.fade(0xFF000000, 0.25, false, function() {
+					subCam.fade(0xFF000000, Options.instantTrans ? 0.1 : 0.25, false, function() {
 						FlxG.switchState(Type.createInstance(options[curSelected].state, []));
 					});
 				});

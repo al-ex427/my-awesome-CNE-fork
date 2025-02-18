@@ -5,6 +5,7 @@ import funkin.backend.scripting.events.TransitionCreationEvent;
 import funkin.backend.scripting.Script;
 import flixel.tweens.FlxTween;
 import flixel.FlxState;
+import funkin.options.Options;
 import funkin.backend.utils.FunkinParentDisabler;
 
 class MusicBeatTransition extends MusicBeatSubstate {
@@ -28,6 +29,7 @@ class MusicBeatTransition extends MusicBeatSubstate {
 	}
 
 	public override function create() {
+
 		if (newState != null)
 			add(new FunkinParentDisabler(true, false));
 
@@ -44,8 +46,11 @@ class MusicBeatTransition extends MusicBeatSubstate {
 		var event = EventManager.get(TransitionCreationEvent).recycle(newState != null, newState);
 		transitionScript.call('create', [event]);
 
+		
+
 		transOut = event.transOut;
 		newState = event.newState;
+
 
 		if (event.cancelled) {
 			super.create();
@@ -70,7 +75,7 @@ class MusicBeatTransition extends MusicBeatSubstate {
 		add(transitionSprite);
 
 		transitionCamera.scroll.y = transitionCamera.height;
-		transitionTween = FlxTween.tween(transitionCamera.scroll, {y: -transitionCamera.height}, 2/3, {
+		transitionTween = FlxTween.tween(transitionCamera.scroll, {y: -transitionCamera.height}, Options.instantTrans ? 0.15 : 2/3, {
 			ease: FlxEase.sineOut,
 			onComplete: function(_) {
 				finish();

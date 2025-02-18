@@ -25,6 +25,7 @@ class Options
 	public static var autoPause:Bool = true;
 	public static var antialiasing:Bool = true;
 	public static var volume:Float = 1;
+	public static var instantTrans:Bool = false;
 	public static var week6PixelPerfect:Bool = true;
 	public static var gameplayShaders:Bool = true;
 	public static var colorHealthBar:Bool = true;
@@ -37,6 +38,7 @@ class Options
 	public static var simpleScoreTxt:Bool = false;
 	public static var gpuOnlyBitmaps:Bool = #if (mac || web) false #else true #end; // causes issues on mac and web
 	public static var hackYourPcYes:Bool = true;
+	public static var smoothHealthbar:Bool = true;
 
 	public static var lastLoadedMod:String = null;
 

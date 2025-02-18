@@ -21,7 +21,7 @@ class FreeplayModifiersScreen extends MusicBeatSubstate {
 		add(alphabets);
 
 		for(i=>modifier in modifiers) {
-			var modifyer = new Alphabet(5, 25 + (i * 230	), modifiers[i], true);
+			var modifyer = new Alphabet(5, 25 + (i * 125), modifiers[i], true);
 			alphabets.add(modifyer);
 
 		}

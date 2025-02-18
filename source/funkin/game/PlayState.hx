@@ -138,6 +138,16 @@ class PlayState extends MusicBeatState
 	 */
 	public var downscroll(get, set):Bool;
 
+	/**
+	 * Whenever the game should use the simpler score txt or not (Settable)
+	 */
+	public var simpluScoreTxt:Bool;
+
+   /**
+	 * Whenever the game should use smooth healthbar or not (Settable)
+	 */
+	public var smoothHealth:Bool;
+
 	public var botplay:Bool = false;
 
 	@:dox(hide) private function set_downscroll(v:Bool) {return camHUD.downscroll = v;}
@@ -626,6 +636,10 @@ class PlayState extends MusicBeatState
 		camHUD.bgColor.alpha = 0;
 
 		downscroll = Options.downscroll;
+		simpluScoreTxt = Options.simpleScoreTxt;
+		smoothHealth = Options.smoothHealthbar;
+
+		
 
 		persistentUpdate = true;
 		persistentDraw = true;
@@ -827,6 +841,10 @@ class PlayState extends MusicBeatState
 		insert(members.indexOf(healthBarBG), healthBar);
 
 		health = maxHealth / 2;
+
+		if (smoothHealth) {
+			healthBar.unbounded = true;
+		}
 
 		iconP1 = new HealthIcon(boyfriend != null ? boyfriend.getIcon() : "face", true);
 		iconP2 = new HealthIcon(dad != null ? dad.getIcon() : "face", false);
@@ -1330,17 +1348,18 @@ class PlayState extends MusicBeatState
 
 	function updateRatingStuff() {
 		if (botplay ) {
-			scoreTxt.text = 'Bot Score: ? ${seperator} BOT ${comboBreaks ? "Combo Breaks" : "Misses"}: ? ${seperator} Bot Combo: ? [0]';
+			scoreTxt.text = 'Bot Score: ? ${seperator} Bot ${comboBreaks ? "Combo Breaks" : "Misses"}: ? ${seperator} Bot Accuracy: [?]';
 		}
-		else if (Options.simpleScoreTxt) {
+		else if (simpluScoreTxt) {
 			scoreTxt.text = 'Score: $songScore';
 		}
 		else {
-			scoreTxt.text = 'Score: $songScore ${seperator} ${comboBreaks ? "Combo Breaks" : "Misses"}: $misses [$ratingFCShit] ${seperator} Combo: $combo [$maxCombo] ${seperator} Accuracy: ${accuracy < 0 ? "[?]" : '${CoolUtil.quantize(accuracy * 100, 100)}% [${curRating.rating}]'}';
+			scoreTxt.text = 'Score: $songScore ${seperator} ${comboBreaks ? "Combo Breaks" : "Misses"}: $misses [$ratingFCShit] ${seperator} Accuracy: ${accuracy < 0 ? "[?]" : '${CoolUtil.quantize(accuracy * 100, 100)}% [${curRating.rating}]'}';
 		}
 		
 	}
 
+	var healthLerp:Float = 0.5;
 	@:dox(hide)
 	override public function update(elapsed:Float)
 	{
@@ -1353,6 +1372,7 @@ class PlayState extends MusicBeatState
 		}
 
 		updateRatingStuff();
+
 
 		if (controls.PAUSE && startedCountdown && canPause)
 			pauseGame();
@@ -1945,8 +1965,8 @@ class PlayState extends MusicBeatState
 			iconP1.scale.set(1.05, 1.05);
 			iconP2.scale.set(1.05, 1.05);
 
-			iconP1.angle = -17.5;
-			iconP2.angle = 17.5;
+			iconP1.angle = -15;
+			iconP2.angle = 15;
 
 			
 			

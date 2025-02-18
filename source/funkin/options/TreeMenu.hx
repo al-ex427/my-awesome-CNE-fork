@@ -65,7 +65,7 @@ class TreeMenu extends UIState {
 			if (menuChangeTween != null)
 				menuChangeTween.cancel();
 
-			menuChangeTween = FlxTween.tween(FlxG.camera.scroll, {x: FlxG.width * Math.max(0, (optionsTree.members.length-1))}, 1.5, {ease: menuTransitionEase, onComplete: function(t) {
+			menuChangeTween = FlxTween.tween(FlxG.camera.scroll, {x: FlxG.width * Math.max(0, (optionsTree.members.length-1))}, Options.instantTrans ? 0.35 : 1.5, {ease: menuTransitionEase, onComplete: function(t) {
 				optionsTree.clearLastMenu();
 				menuChangeTween = null;
 			}});

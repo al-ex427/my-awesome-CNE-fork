@@ -27,6 +27,10 @@ class GameplayOptions extends OptionsScreen {
 			"songOffset", // save name or smth
 			__changeOffset)); // callback
 		add(new Checkbox(
+			"Smooth Healthbar",
+			"If unchecked, makes the healthbar not smooth",
+			"smoothHealthbar"));
+		add(new Checkbox(
 			"Simple Score Text",
 			"If checked, only shows the score",
 			"simpleScoreTxt"

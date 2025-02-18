@@ -45,7 +45,25 @@ import funkin.options.Options;
 class WindowsUtil {
 
 	@:functionCode('MessageBoxA(GetActiveWindow(), message, caption, buttons | icon);')
-    public static function ShowMessageBox(caption:String, message:String, icon:MessageBoxIconType = MSG_NONE, buttons:MessageBoxButtonType = MSGBTN_OK) {}
+    public static function ShowMessageBox(caption:String, message:String, icon:MessageBoxIconType = MSG_NONE, buttons:MessageBoxButtonType = MSGBTN_OK) { }
+
+	@:functionCode('
+	auto color = RGB(r, g, b); 
+
+	if (S_OK != DwmSetWindowAttribute(GetActiveWindow(), 35, &color, sizeof(COLORREF))) {
+        DwmSetWindowAttribute(GetActiveWindow(), 35, &color, sizeof(COLORREF));
+    }')
+	public static function ChangeWindowBarColor(r:Int, g:Int, b:Int) { }
+
+	@:functionCode('
+	auto color = RGB(r, g, b); 
+	if (S_OK != DwmSetWindowAttribute(GetActiveWindow(), 34, &color, sizeof(COLORREF))) {
+         DwmSetWindowAttribute(GetActiveWindow(), 34, &color, sizeof(COLORREF));
+     }')
+	public static function ChangeWindowBorderColor(r:Int, g:Int, b:Int) { }
+
+	public static function LinkedChangeWindowColors(r:Int, g:Int, b:Int) { ChangeWindowBarColor(r, g, b); ChangeWindowBorderColor(r, g, b); }
+
 
 /**
  * use ndlls to add extra stuff im not giving you all of it -alex

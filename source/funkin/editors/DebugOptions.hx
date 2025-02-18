@@ -125,5 +125,23 @@ class WinUtilTester extends OptionsScreen {
 			function() {
 				WindowsUtil.ShowMessageBox("NO MORE INNOCENCE", "i have invaded your computer, muhehehe", iconsArray[FlxG.random.int(0, 4)], buttonsArray[FlxG.random.int(0, 7)]);
 			}));
+		add(new TextOption(
+			"Window Bar Color",
+			"Changes your window bar to a random color",
+			function() {
+				WindowsUtil.ChangeWindowBarColor(FlxG.random.int(0, 255), FlxG.random.int(0, 255), FlxG.random.int(0, 255));
+			}));
+		add(new TextOption(
+			"Window Border Color",
+			"Changes your window border to a random color",
+			function() {
+				WindowsUtil.ChangeWindowBorderColor(FlxG.random.int(0, 255), FlxG.random.int(0, 255), FlxG.random.int(0, 255));
+			}));
+		add(new TextOption(
+			"Linked Window Color",
+			"Changes both your window bar and border to a random color",
+			function() {
+				WindowsUtil.LinkedChangeWindowColors(FlxG.random.int(0, 255), FlxG.random.int(0, 255), FlxG.random.int(0, 255));
+			}));
 	}
 }

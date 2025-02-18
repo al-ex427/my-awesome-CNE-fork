@@ -6,6 +6,7 @@ import funkin.menus.credits.CreditsMain;
 import flixel.FlxState;
 import flixel.effects.FlxFlicker;
 import flixel.text.FlxText;
+import funkin.options.Options;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import lime.app.Application;
@@ -160,7 +161,7 @@ class MainMenuState extends MusicBeatState
 
 		//if (Options.flashingMenu) FlxFlicker.flicker(magenta, 1.1, 0.15, false);
 
-		FlxFlicker.flicker(menuItems.members[curSelected], 1, Options.flashingMenu ? 0.06 : 0.15, false, false, function(flick:FlxFlicker)
+		FlxFlicker.flicker(menuItems.members[curSelected], Options.instantTrans ? 0.25 : 1, Options.flashingMenu ? 0.06 : 0.15, false, false, function(flick:FlxFlicker)
 		{
 			var daChoice:String = optionShit[curSelected];
 
