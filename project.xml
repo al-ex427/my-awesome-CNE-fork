@@ -13,7 +13,7 @@
 	<app save-path="al-ex427/AwesomeCNEFork" save-name="save-default" mod-saves="true" />
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
-	<set name="APP_ID" value="0x0100f6c013bbc000" />
+	<set name="APP_ID" value="0x129abfadcab1c101" />
 
 	<!-- DO NOT REMOVE!! ALLOWS ME TO DO REGIONS LIKE IN C# AND KEEP CODE ORGANIZED. REMOVING IT WOULD BREAK THE ENGINE -->
 	<haxedef name="REGION" />

@@ -138,6 +138,11 @@ class PlayState extends MusicBeatState
 	 */
 	public var downscroll(get, set):Bool;
 
+   /**
+	 * Whenever the game should show a timebar or not. (Settable)
+	 */
+	 public var showTimebar:Bool;
+
 	/**
 	 * Whenever the game should use the simpler score txt or not (Settable)
 	 */
@@ -152,6 +157,9 @@ class PlayState extends MusicBeatState
 
 	@:dox(hide) private function set_downscroll(v:Bool) {return camHUD.downscroll = v;}
 	@:dox(hide) private function get_downscroll():Bool  {return camHUD.downscroll;}
+
+	//@:dox(hide) private function set_showTimebar(v:Bool) {return timeBar.visible = v;}
+	//@:dox(hide) private function get_showTimebar():Bool  {return timeBar.visible;}
 
 	/**
 	 * Instrumental sound (Inst.ogg).
@@ -280,6 +288,11 @@ class PlayState extends MusicBeatState
 	public var health:Float = 1;
 
 	/**
+	 * Current health but lerped
+	 */
+	var healthLerp:Float = 1;
+
+	/**
 	 * Maximum health the player can have. Defaults to 2.
 	 */
 	@:isVar public var maxHealth(get, set):Float = 2;
@@ -335,6 +348,11 @@ class PlayState extends MusicBeatState
 	 * The player's current score.
 	 */
 	public var songScore:Int = 0;
+
+	/**
+	 * Time left lerped
+	 */
+	var timeLerp:Float = 0;
 	/**
 	 * The player's amount of misses.
 	 */
@@ -370,6 +388,11 @@ class PlayState extends MusicBeatState
 	 * FunkinText that shows the time 
 	 */
 	public var timeTxt:FunkinText;
+
+	/**
+	 * FlxTween that scales the timetxt
+	 */
+	var timeTxtTween:FlxTween;
 	/**
 	 * FunkinText that shows the songs name (can be disabled)
 	 */
@@ -619,6 +642,8 @@ class PlayState extends MusicBeatState
 		return name;
 	}
 
+
+
 	@:dox(hide) override public function create()
 	{
 		Note.__customNoteTypeExists = [];
@@ -636,6 +661,7 @@ class PlayState extends MusicBeatState
 		camHUD.bgColor.alpha = 0;
 
 		downscroll = Options.downscroll;
+		showTimebar = Options.timebar;
 		simpluScoreTxt = Options.simpleScoreTxt;
 		smoothHealth = Options.smoothHealthbar;
 
@@ -816,24 +842,24 @@ class PlayState extends MusicBeatState
 		healthBarBG.scrollFactor.set();
 		add(healthBarBG);
 
-		timeBarBG = new FlxSprite(0, 15).loadAnimatedGraphic(Paths.image('game/healthBar'));
+		timeBarBG = new FlxSprite(0, 15).loadAnimatedGraphic(Paths.image('game/timeBar'));
 		timeBarBG.screenCenter(X);
 		timeBarBG.scrollFactor.set();
-		timeBarBG.color = FlxColor.BLACK;
-	//	add(timeBarBG);
+		timeBarBG.color = FlxColor.BLACK;	
+		add(timeBarBG);
 
 
-		timeBar = new FlxBar(timeBarBG.x + 4, timeBarBG.y + 4, LEFT_TO_RIGHT, Std.int(timeBarBG.width - 8), Std.int(timeBarBG.height - 8), this, 'songPosition', 0, 1);
-		timeBar.createFilledBar(0xFF000000, 0xFFFFFFFF);
-	//	add(timeBar);
+		timeBar = new FlxBar(timeBarBG.x + 4, timeBarBG.y + 4, LEFT_TO_RIGHT, Std.int(timeBarBG.width - 8), Std.int(timeBarBG.height - 8), this, 'timeLerp', 0, inst.length);
+		timeBar.createFilledBar(0xFF070707, Options.colorHealthBar ? dad.iconColor != null ? dad.iconColor : 0xFFFFFFFF : 0xFFFFFFFF);
+		insert(members.indexOf(timeBarBG), timeBar);
 
-
-		timeTxt = new FunkinText(timeBarBG.x, timeBarBG.y, timeBarBG.width, "A song (00:00)", 24);
+		timeTxt = new FunkinText(timeBarBG.x, timeBarBG.y - 7, timeBarBG.width, "00:00", 32);
+		timeTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 2.75, 5);
 		timeTxt.alignment = CENTER;
-	//	add(timeTxt);
+		add(timeTxt);
 
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
-			'health', 0, maxHealth);
+		smoothHealth ? 'healthLerp' : 'health', 0, maxHealth);
 		healthBar.scrollFactor.set();
 		var leftColor:Int = dad != null && dad.iconColor != null && Options.colorHealthBar ? dad.iconColor : (opponentMode ? 0xFF66FF33 : 0xFFFF0000);
 		var rightColor:Int = boyfriend != null && boyfriend.iconColor != null && Options.colorHealthBar ? boyfriend.iconColor : (opponentMode ? 0xFFFF0000 : 0xFF66FF33); // switch the colors
@@ -841,10 +867,7 @@ class PlayState extends MusicBeatState
 		insert(members.indexOf(healthBarBG), healthBar);
 
 		health = maxHealth / 2;
-
-		if (smoothHealth) {
-			healthBar.unbounded = true;
-		}
+		healthLerp = health;
 
 		iconP1 = new HealthIcon(boyfriend != null ? boyfriend.getIcon() : "face", true);
 		iconP2 = new HealthIcon(dad != null ? dad.getIcon() : "face", false);
@@ -861,21 +884,22 @@ class PlayState extends MusicBeatState
 	//	accuracyTxt = new FunkinText(healthBarBG.x + 50, healthBarBG.y + 30, Std.int(healthBarBG.width - 100), "Accuracy: 0.00% [???]", 16);
 	//	accuracyTxt.addFormat(accFormat, 0, 1);
 
-		curSongTxt = new FunkinText(0, 5, FlxG.width, '- ${SONG.meta.displayName} [${difficulty.toUpperCase()}] | 00:00 / 00:01 -', 24);
+		curSongTxt = new FunkinText(5, 5, FlxG.width, '${SONG.meta.displayName} [${difficulty.toUpperCase()}]', 20);
 		curSongTxt.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 1.75, 5);
-		curSongTxt.alignment = CENTER;
+		curSongTxt.alignment = LEFT;
 		for(text in [scoreTxt,curSongTxt]) { // missesTxt, accuracyTxt,  timeTxt, 
 			text.alpha = 0.75;
 			text.scrollFactor.set();
 			add(text);
 		}
-
-		
-		
-
 		updateRatingStuff();
-
-		for(e in [healthBar, healthBarBG, iconP1, iconP2, scoreTxt,  curSongTxt]) {
+		if (!showTimebar) {
+			for (timeShit in [timeBar, timeBarBG, timeTxt]) {
+				timeShit.visible = false;
+			}
+		}
+		
+		for(e in [healthBar, healthBarBG, iconP1, iconP2, scoreTxt,  curSongTxt, timeBar, timeBarBG, timeTxt]) {
 			e.cameras = [camHUD];
 			if (doScaleOnStart)
 			{
@@ -911,6 +935,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 	}
+
 
 	@:dox(hide) public override function createPost() {
 		startCutscene("", cutscene, null, true);
@@ -1111,6 +1136,22 @@ class PlayState extends MusicBeatState
 		instance = null;
 
 		Note.__customNoteTypeExists = [];
+	}
+
+	var swapTimeTxtBop:Bool = false;
+	public function doTimeTxtBop()
+	{
+		swapTimeTxtBop = !swapTimeTxtBop;	
+		if(timeTxtTween != null)
+			timeTxtTween.cancel();
+
+		timeTxt.scale.set(1.05, 1.05);
+
+		timeTxtTween = FlxTween.tween(timeTxt.scale, {x: 1, y: 1}, 0.5, {
+			onComplete: function(twn:FlxTween) {
+				timeTxtTween = null;
+			}
+		});
 	}
 
 	public static function resetSongInfos() {
@@ -1359,7 +1400,7 @@ class PlayState extends MusicBeatState
 		
 	}
 
-	var healthLerp:Float = 0.5;
+
 	@:dox(hide)
 	override public function update(elapsed:Float)
 	{
@@ -1373,6 +1414,10 @@ class PlayState extends MusicBeatState
 
 		updateRatingStuff();
 
+		healthLerp = lerp(healthLerp, health, 0.15);
+		var calculatedTimeLEFT:Float = Conductor.songPosition - Options.songOffset;
+	//	var calculated
+		timeLerp = lerp(timeLerp, calculatedTimeLEFT, 0.25);
 
 		if (controls.PAUSE && startedCountdown && canPause)
 			pauseGame();
@@ -1403,7 +1448,7 @@ class PlayState extends MusicBeatState
 		}
 		updateIconPositions();
 
-		curSongTxt.text = '- ${SONG.meta.displayName} [${difficulty.toUpperCase()}] | ${CoolUtil.timeToStr(Conductor.songPosition, false)} / ${CoolUtil.timeToStr(inst.length, false)} -';
+		timeTxt.text = '${CoolUtil.timeToStr(Conductor.songPosition, false)}';
 		if (startingSong)
 		{
 			if (startedCountdown)
@@ -1957,7 +2002,7 @@ class PlayState extends MusicBeatState
 			FlxG.camera.zoom += 0.015 * camZoomingStrength;
 			camHUD.zoom += 0.03 * camZoomingStrength;
 		}
-
+		doTimeTxtBop();
         if (doIconBop)
 		{
 			if (!startingSong && doScaleOnStart) return;

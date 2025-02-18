@@ -39,7 +39,8 @@ class Options
 	public static var gpuOnlyBitmaps:Bool = #if (mac || web) false #else true #end; // causes issues on mac and web
 	public static var hackYourPcYes:Bool = true;
 	public static var smoothHealthbar:Bool = true;
-
+	public static var timebar:Bool = true;
+	
 	public static var lastLoadedMod:String = null;
 
 	/**
