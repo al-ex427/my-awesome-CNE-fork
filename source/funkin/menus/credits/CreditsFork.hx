@@ -8,9 +8,9 @@ import flixel.text.FlxText;
 
 using StringTools;
 
-class CreditsCodename extends funkin.options.OptionsScreen {
+class CreditsFork extends funkin.options.OptionsScreen {
 	public var error:Bool = false;
-	public var author:String = "CodenameCrew";
+	public var author:String = "al-ex427";
 	public var totalContributions:Int = 0;
 
 	public var mainDevCol:FlxColor = 0xFF9C35D5;
@@ -19,7 +19,7 @@ class CreditsCodename extends funkin.options.OptionsScreen {
 
 	public override function new()
 	{
-		super("Codename Engine", "All the contributors of the engine! - Press RESET to update the list (One reset per 2 minutes).");
+		super("Awesome CNE Fork", "All the contributors of the fork! - Press RESET to update the list (One reset per 2 minutes).");
 		tryUpdating(true);
 	}
 
@@ -77,7 +77,7 @@ class CreditsCodename extends funkin.options.OptionsScreen {
 		Options.lastUpdated = curTime;
 
 		error = false;
-		var idk = GitHub.getContributors(author, "CodenameEngine", function(e) {
+		var idk = GitHub.getContributors(author, "my-awesome-CNE-fork", function(e) {
 			error = true;
 			var errMsg:String = 'Error while trying to download contributors list:\n${CoolUtil.removeIP(e.message)}';
 			Logs.traceColored([Logs.logText(errMsg.replace('\n', ' '), RED)], ERROR);
@@ -90,12 +90,15 @@ class CreditsCodename extends funkin.options.OptionsScreen {
 		var errorOnMain:Bool = false;
 		var idk2 = GitHub.getOrganizationMembers(author, function(e) {
 			errorOnMain = true;
+			for (dev in Options.cneMainDevs) {
+				
+			}
 			var errMsg:String = 'Error while trying to download $author members list:\n${CoolUtil.removeIP(e.message)}';
 			Logs.traceColored([Logs.logText(errMsg.replace('\n', ' '), RED)], ERROR);
 			funkin.backend.utils.NativeAPI.showMessageBox("Codename Engine Warning", errMsg, MSG_WARNING);
 		});
 		if(!errorOnMain) {
-			Options.cneMainDevs = [for(m in idk2) m.id];
+			Options.acfMainDevs = [for(m in idk2) m.id];
 			trace('Main Devs list Updated!');
 		}
 

@@ -26,6 +26,7 @@ typedef ChartMetaData = {
 	public var ?difficulties:Array<String>;
 	public var ?coopAllowed:Bool;
 	public var ?opponentModeAllowed:Bool;
+	public var ?desktopModeAllowed:Bool;
 	public var ?customValues:Dynamic;
 
 	// NOT TO BE EXPORTED

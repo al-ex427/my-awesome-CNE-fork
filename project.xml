@@ -5,7 +5,7 @@
 		title="Friday Night Funkin' - Awesome CNE Fork" main="funkin.backend.system.Main"
 		file="AwesomeCNEFork" packageName="com.al-ex427.awesomecnefork"
 		package="com.al-ex427.awesomecnefork"
-		version="0.1.0b" company="Al-ex427" />
+		version="0.1.1a" company="Al-ex427" />
 
 	<!--
 		CHANGE THE SAVE PATH & NAME FOR YOUR MOD HERE!
@@ -103,7 +103,7 @@
 	<!-- _________________________________ Engine Settings _______________________________ -->
 
 	<!-- Comment this out to disable updates !-->
-	<!-- <define name="UPDATE_CHECKING" unless="web || hl || neko"/> -->
+	<define name="UPDATE_CHECKING" unless="web || hl || neko"/>
 
 	<!-- Comment this out to disable Discord RPC !-->
 	<section if="cpp">

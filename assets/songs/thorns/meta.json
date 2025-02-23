@@ -4,5 +4,6 @@
 	"icon": "spirit",
 	"color": "#FF78BF",
 	"coopAllowed": true,
-	"opponentModeAllowed": true
+	"opponentModeAllowed": true,
+	"desktopModeAllowed": true
 }

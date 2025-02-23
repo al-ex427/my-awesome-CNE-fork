@@ -2,6 +2,7 @@ package funkin.game;
 
 import funkin.editors.charter.CharterSelection;
 import openfl.Lib;
+import lime.app.Application;
 import flixel.FlxState;
 import funkin.editors.SaveWarning;
 import funkin.backend.chart.EventsData;
@@ -146,17 +147,22 @@ class PlayState extends MusicBeatState
 	/**
 	 * Whenever the game should use the simpler score txt or not (Settable)
 	 */
-	public var simpluScoreTxt:Bool;
+	public var scoreTxtBehaviour:String;
 
    /**
 	 * Whenever the game should use smooth healthbar or not (Settable)
 	 */
 	public var smoothHealth:Bool;
 
-	public var botplay:Bool = false;
+	public var botplay(get, set):Bool;
+	
+	var bplay:Bool; //botplay doesnt like using player.cpu;
 
 	@:dox(hide) private function set_downscroll(v:Bool) {return camHUD.downscroll = v;}
 	@:dox(hide) private function get_downscroll():Bool  {return camHUD.downscroll;}
+
+	@:dox(hide) private function set_botplay(v:Bool)  {return bplay = v;}
+	@:dox(hide) private function get_botplay():Bool  {return bplay;}
 
 	//@:dox(hide) private function set_showTimebar(v:Bool) {return timeBar.visible = v;}
 	//@:dox(hide) private function get_showTimebar():Bool  {return timeBar.visible;}
@@ -662,10 +668,9 @@ class PlayState extends MusicBeatState
 
 		downscroll = Options.downscroll;
 		showTimebar = Options.timebar;
-		simpluScoreTxt = Options.simpleScoreTxt;
+		scoreTxtBehaviour = Options.scoreTxtBehaviour;
 		smoothHealth = Options.smoothHealthbar;
-
-		
+		botplay = Options.modifier_Botplay;
 
 		persistentUpdate = true;
 		persistentDraw = true;
@@ -808,6 +813,12 @@ class PlayState extends MusicBeatState
 		scripts.set("SONG", SONG);
 		scripts.load();
 		scripts.call("create");
+
+		if (bplay) {
+			player.cpu = bplay;
+			trace("CHEATER DETECTED [user has botplay turned on]");
+		}
+
 		#end
 
 		// HUD INITIALIZATION & CAMERA INITIALIZATION
@@ -837,19 +848,19 @@ class PlayState extends MusicBeatState
 
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 
-		healthBarBG = new FlxSprite(0, (FlxG.height * 0.89)).loadAnimatedGraphic(Paths.image('game/healthBar'));
+		healthBarBG = new FlxSprite(0, (FlxG.height * 0.9)).loadAnimatedGraphic(Paths.image('game/healthBar'));
 		healthBarBG.screenCenter(X);
 		healthBarBG.scrollFactor.set();
 		add(healthBarBG);
 
-		timeBarBG = new FlxSprite(0, 15).loadAnimatedGraphic(Paths.image('game/timeBar'));
+		timeBarBG = new FlxSprite(0, 10).loadAnimatedGraphic(Paths.image('game/timeBar'));
 		timeBarBG.screenCenter(X);
 		timeBarBG.scrollFactor.set();
 		timeBarBG.color = FlxColor.BLACK;	
 		add(timeBarBG);
 
 
-		timeBar = new FlxBar(timeBarBG.x + 4, timeBarBG.y + 4, LEFT_TO_RIGHT, Std.int(timeBarBG.width - 8), Std.int(timeBarBG.height - 8), this, 'timeLerp', 0, inst.length);
+		timeBar = new FlxBar(timeBarBG.x + 4, timeBarBG.y + 4, LEFT_TO_RIGHT, Std.int(timeBarBG.width - 8), Std.int(timeBarBG.height - 8), this, 'timeLerp', 0,inst.length);
 		timeBar.createFilledBar(0xFF070707, Options.colorHealthBar ? dad.iconColor != null ? dad.iconColor : 0xFFFFFFFF : 0xFFFFFFFF);
 		insert(members.indexOf(timeBarBG), timeBar);
 
@@ -876,19 +887,18 @@ class PlayState extends MusicBeatState
 			add(icon);
 		}
 
-		scoreTxt = new FunkinText(0, healthBarBG.y + (downscroll ? -45 : 45), FlxG.width, "brr skipidi dop dop yes yes", 18);
+		scoreTxt = new FunkinText(0, healthBarBG.y + (downscroll ? -40 : 40), FlxG.width, "brr skipidi dop dop yes yes", 18);
 		scoreTxt.alignment = CENTER;
-		scoreTxt.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 1.75, 5);
+		scoreTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.75, 5);
 
 		//missesTxt = new FunkinText(healthBarBG.x + 50, healthBarBG.y + 30, Std.int(healthBarBG.width - 100), "Misses: 0", 16);
 	//	accuracyTxt = new FunkinText(healthBarBG.x + 50, healthBarBG.y + 30, Std.int(healthBarBG.width - 100), "Accuracy: 0.00% [???]", 16);
 	//	accuracyTxt.addFormat(accFormat, 0, 1);
 
-		curSongTxt = new FunkinText(5, 5, FlxG.width, '${SONG.meta.displayName} [${difficulty.toUpperCase()}]', 20);
-		curSongTxt.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.BLACK, 1.75, 5);
+		curSongTxt = new FunkinText(5, 5, FlxG.width, '${SONG.meta.displayName} [${difficulty.toUpperCase()}] | ACF ${Application.current.meta.get('version')}', 20);
+		curSongTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.75, 5);
 		curSongTxt.alignment = LEFT;
 		for(text in [scoreTxt,curSongTxt]) { // missesTxt, accuracyTxt,  timeTxt, 
-			text.alpha = 0.75;
 			text.scrollFactor.set();
 			add(text);
 		}
@@ -1388,14 +1398,17 @@ class PlayState extends MusicBeatState
 	public var seperator:String = "//";
 
 	function updateRatingStuff() {
-		if (botplay ) {
-			scoreTxt.text = 'Bot Score: ? ${seperator} Bot ${comboBreaks ? "Combo Breaks" : "Misses"}: ? ${seperator} Bot Accuracy: [?]';
+		if (bplay) {
+			scoreTxt.text = 'CHEATER. (BOTPLAY ACTIVE)';
+			return;
 		}
-		else if (simpluScoreTxt) {
-			scoreTxt.text = 'Score: $songScore';
-		}
-		else {
-			scoreTxt.text = 'Score: $songScore ${seperator} ${comboBreaks ? "Combo Breaks" : "Misses"}: $misses [$ratingFCShit] ${seperator} Accuracy: ${accuracy < 0 ? "[?]" : '${CoolUtil.quantize(accuracy * 100, 100)}% [${curRating.rating}]'}';
+
+		switch (scoreTxtBehaviour) {
+			case "none": scoreTxt.text = '';
+			case "simple": scoreTxt.text = 'Score: $songScore';
+			case "full": 
+				var accuracy2:Float = CoolUtil.quantize(accuracy * 100, 100);
+				scoreTxt.text = 'Score: $songScore ${seperator} ${comboBreaks ? "Combo Breaks" : "Misses"}: $misses [$ratingFCShit] ${seperator} Accuracy: ${accuracy < 0 ? "[?]" : '${accuracy2}% [${curRating.rating}]'}';
 		}
 		
 	}
@@ -1991,11 +2004,14 @@ class PlayState extends MusicBeatState
 		scripts.call("measureHit", [curMeasure]);
 	}
 
+	var swapIconBop:Bool = false; //used to change direction
 	@:dox(hide)
 	override function beatHit(curBeat:Int)
 	{
 		super.beatHit(curBeat);
 
+	
+		swapIconBop = !swapIconBop;
 		if (camZoomingInterval < 1) camZoomingInterval = 1;
 		if (Options.camZoomOnBeat && camZooming && FlxG.camera.zoom < maxCamZoom && curBeat % camZoomingInterval == 0)
 		{
@@ -2007,11 +2023,11 @@ class PlayState extends MusicBeatState
 		{
 			if (!startingSong && doScaleOnStart) return;
 				
-			iconP1.scale.set(1.05, 1.05);
-			iconP2.scale.set(1.05, 1.05);
+			iconP1.scale.set(1.1, 1.1);
+			iconP2.scale.set(1.1, 1.1);
 
-			iconP1.angle = -15;
-			iconP2.angle = 15;
+			iconP1.angle = swapIconBop ? 10 : -10;
+			iconP2.angle = swapIconBop ? -10 : 10;
 
 			
 			

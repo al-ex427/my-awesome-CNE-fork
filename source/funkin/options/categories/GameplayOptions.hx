@@ -34,10 +34,12 @@ class GameplayOptions extends OptionsScreen {
 			"Smooth Healthbar",
 			"If unchecked, makes the healthbar not smooth",
 			"smoothHealthbar"));
-		add(new Checkbox(
-			"Simple Score Text",
-			"If checked, only shows the score",
-			"simpleScoreTxt"
+		add(new ArrayOption(
+			"Score Behaviour",
+			"How the scoreTxt acts",
+			["none", "simple", "full"],
+			["None", "Simple", "Full"],
+			"scoreTxtBehaviour"
 		));
 		add(new Checkbox(
 			"Naughtyness",

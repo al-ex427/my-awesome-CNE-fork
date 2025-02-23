@@ -4,5 +4,6 @@
 	"icon": "monster",
 	"color": "#A0D1FF",
 	"coopAllowed": true,
-	"opponentModeAllowed": true
+	"opponentModeAllowed": true,
+	"desktopModeAllowed": true
 }

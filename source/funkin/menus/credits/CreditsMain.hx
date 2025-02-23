@@ -35,7 +35,10 @@ class CreditsMain extends TreeMenu {
 						items.push(c);
 			}
 		}
-		items.push(new TextOption("Codename Engine >", "Select this to see all the contributors of the engine!", function() {
+		items.push(new TextOption("Awesome CNE Fork >", "Select this to see all the contributors of the fork!", function() {
+			optionsTree.add(Type.createInstance(CreditsFork, []));
+		}));
+		items.push(new TextOption("Codename Engine >", "Select this to see all the contributors/devs of CNE (aka. what this is based on)", function() {
 			optionsTree.add(Type.createInstance(CreditsCodename, []));
 		}));
 		items.push(new TextOption("Friday Night Funkin'", "Select this to open the itch.io page of the original game to donate!", function() {

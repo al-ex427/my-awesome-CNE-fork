@@ -4,5 +4,6 @@
 	"icon": "pico",
 	"color": "#941653",
 	"coopAllowed": true,
-	"opponentModeAllowed": true
+	"opponentModeAllowed": true,
+	"desktopModeAllowed": true
 }

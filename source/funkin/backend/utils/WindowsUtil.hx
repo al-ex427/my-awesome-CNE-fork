@@ -57,6 +57,7 @@ class WindowsUtil {
 
 	@:functionCode('
 	auto color = RGB(r, g, b); 
+
 	if (S_OK != DwmSetWindowAttribute(GetActiveWindow(), 34, &color, sizeof(COLORREF))) {
          DwmSetWindowAttribute(GetActiveWindow(), 34, &color, sizeof(COLORREF));
      }')
@@ -64,6 +65,7 @@ class WindowsUtil {
 
 	public static function LinkedChangeWindowColors(r:Int, g:Int, b:Int) { ChangeWindowBarColor(r, g, b); ChangeWindowBorderColor(r, g, b); }
 
+	
 
 /**
  * use ndlls to add extra stuff im not giving you all of it -alex

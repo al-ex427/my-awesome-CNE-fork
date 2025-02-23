@@ -4,5 +4,6 @@
 	"icon": "tankman",
 	"color": "#F6B604",
 	"coopAllowed": true,
-	"opponentModeAllowed": true
+	"opponentModeAllowed": true,
+	"desktopModeAllowed": true
 }

@@ -35,13 +35,18 @@ class Options
 	public static var hitWindow:Float = 250;
 	public static var songOffset:Float = 0;
 	public static var framerate:Int = 120;
-	public static var simpleScoreTxt:Bool = false;
+	public static var scoreTxtBehaviour:String = "full";
 	public static var gpuOnlyBitmaps:Bool = #if (mac || web) false #else true #end; // causes issues on mac and web
 	public static var hackYourPcYes:Bool = true;
 	public static var smoothHealthbar:Bool = true;
 	public static var timebar:Bool = true;
 	
 	public static var lastLoadedMod:String = null;
+
+	/**
+	 * MODIFIERS
+	 */
+	public static var modifier_Botplay:Bool = false;
 
 	/**
 	 * EDITORS SETTINGS
@@ -57,7 +62,8 @@ class Options
 	public static var freeplayLastSong:String = null;
 	public static var freeplayLastDifficulty:String = "normal";
 	public static var contributors:Array<funkin.backend.system.github.GitHubContributor> = [];
-	public static var mainDevs:Array<Int> = [];  // IDs
+	public static var cneMainDevs:Array<Int> = [];  // IDs
+	public static var acfMainDevs:Array<Int> = [];  // IDs
 	public static var lastUpdated:Null<Float>;
 
 	/**

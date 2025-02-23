@@ -24,15 +24,15 @@ function onPlayStateUpdate() {
 
 function onMenuLoaded(name:String) {
 	// Name is either "Main Menu", "Freeplay", "Title Screen", "Options Menu", "Credits Menu", "Beta Warning", "Update Available Screen", "Update Screen"
-	DiscordUtil.changePresenceSince("In the Menus", null);
+	DiscordUtil.changePresenceSince("Using the Menus", null);
 }
 
 function onEditorTreeLoaded(name:String) {
 	switch(name) {
 		case "Character Editor":
-			DiscordUtil.changePresenceSince("Choosing a Character", null);
+			DiscordUtil.changePresenceSince("Choosing a Character XML", null);
 		case "Chart Editor":
-			DiscordUtil.changePresenceSince("Choosing a Chart", null);
+			DiscordUtil.changePresenceSince("Choosing a Song Chart", null);
 		case "Stage Editor":
 			DiscordUtil.changePresenceSince("Choosing a Stage", null);
 	}
@@ -41,9 +41,9 @@ function onEditorTreeLoaded(name:String) {
 function onEditorLoaded(name:String, editingThing:String) {
 	switch(name) {
 		case "Character Editor":
-			DiscordUtil.changePresenceSince("Editing a Character", editingThing);
+			DiscordUtil.changePresenceSince("Editing a Character XML", editingThing);
 		case "Chart Editor":
-			DiscordUtil.changePresenceSince("Editing a Chart", editingThing);
+			DiscordUtil.changePresenceSince("Editing a Song Chart", editingThing);
 		case "Stage Editor":
 			DiscordUtil.changePresenceSince("Editing a Stage", editingThing);
 	}
