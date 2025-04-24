@@ -11,7 +11,7 @@ class CodenameBuildField extends TextField {
 		defaultTextFormat = Framerate.textFormat;
 		autoSize = LEFT;
 		multiline = wordWrap = false;
-		text = 'Codename Engine ${Main.releaseCycle}\nCommit ${GitCommitMacro.commitNumber} (${GitCommitMacro.commitHash})';
+		text = "alex's " + 'CNE Fork (${Main.releaseCycle})\nCommit ${GitCommitMacro.commitNumber} (${GitCommitMacro.commitHash})'; //couldnt use ' in this
 		selectable = false;
 	}
 }
